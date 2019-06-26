@@ -11,6 +11,11 @@ var authorize   = require(process.argv[2]);
 var user        = process.argv[3];
 var fingerprint = process.argv[4];
 
+if(!process.env.SSH_ORIGINAL_COMMAND) {
+  console.error("Hello, "+ user);
+  process.exit(1);
+}
+
 // parse command and repo
 var cmd;
 try {
@@ -44,7 +49,7 @@ authorize(authObj, function (err, path) {
   }
   console.error("cmd: "+command+ " " + path);
   var child = spawn(command, authObj.action === "read" ? 
-                [path] : ['--stirct', '--timeout=5', path], {detached:true});
+                [path] : [/*'--stirct', '--timeout=5', */path], {detached:true});
   child.on('exit', function(rc) {
     process.exit(rc);
   });
